@@ -10,7 +10,7 @@ inputs:
     required: false
     default: ""
   package-ref:
-    description: branch / tag of package
+    description: branch or tag of package source
     required: false
     default: ""
   no-eoas:
@@ -32,7 +32,7 @@ runs:
       with:
         python-version: 3
     - id: supported-pythons
-      run: echo versions=$(pipx run ${{ github.action_path }}/supported_pythons.py --package-source=${{ inputs.package && './package/' || '.' }} ${{ inputs.no-eoas != 'false' && '--no-eoas' || '' }} ${{ inputs.latest-only != 'false' && '--latest-only' || '' }}) >> $GITHUB_OUTPUT
+      run: echo versions=$(pipx run ${{ github.action_path }}/supported_pythons.py --package-source=${{ inputs.package && './package/' || '.' }} ${{ inputs.no-eoas == 'true' && '--no-eoas' || '' }} ${{ inputs.latest-only == 'true' && '--latest-only' || '' }}) >> $GITHUB_OUTPUT
       shell: bash
 
 outputs:

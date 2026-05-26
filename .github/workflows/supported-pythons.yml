@@ -4,7 +4,7 @@ on:
   workflow_call:
     inputs:
       package:
-        description: repository containing package source (defaults to that of calling workflow)
+        description: package source repository containing `pyproject.toml` (defaults to that of calling workflow)
         type: string
         required: false
         default: ""
@@ -35,6 +35,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+        with:
+          repository: ${{ github.workflow_repository }}
+          ref: ${{ github.workflow_sha }}
       - id: supported-pythons
         uses: ./
         with:

@@ -7,7 +7,7 @@ retrieve active (not end-of-life) minor versions of Python supported by a Python
 | input         | description                                              |
 | ------------- | -------------------------------------------------------- |
 | `package`     | package source repository containing `pyproject.toml`    |
-| `package-ref` | branch / tag of package                                  |
+| `package-ref` | branch or tag of package source                          |
 | `no-eoas`     | also omit end-of-active-support versions of Python       |
 | `latest-only` | only return the latest supported minor version of Python |
 
