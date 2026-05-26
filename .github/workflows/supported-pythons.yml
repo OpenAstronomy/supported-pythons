@@ -36,8 +36,8 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          repository: ${{ github.workflow_repository }}
-          ref: ${{ github.workflow_sha }}
+          repository: zacharyburnett/supported-pythons
+          ref: 1.0.0
       - id: supported-pythons
         uses: ./
         with:
