@@ -10,11 +10,11 @@ retrieve active (not end-of-life) minor versions of Python supported by a Python
 | `package-ref` | branch or tag of package source                       |
 | `no-eoas`     | also omit end-of-active-support versions of Python    |
 
-| output     | description                           |
-| ---------- | ------------------------------------- |
-| `versions` | Python minor versions as a JSON list  |
-| `oldest`   | oldest supported Python minor version |
-| `latest`   | latest supported Python minor version |
+| output   | description                           |
+| -------- | ------------------------------------- |
+| `all`    | Python minor versions as a JSON list  |
+| `oldest` | oldest supported Python minor version |
+| `latest` | latest supported Python minor version |
 
 ```yaml
 jobs:
@@ -26,7 +26,7 @@ jobs:
         with:
           package: spacetelescope/romancal
     outputs:
-      versions: ${{ steps.supported-pythons.outputs.versions }}
+      all: ${{ steps.supported-pythons.outputs.all }}
       oldest: ${{ steps.supported-pythons.outputs.oldest }}
       latest: ${{ steps.supported-pythons.outputs.latest }}
   test:
@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ${{ fromJSON(needs.supported-pythons.outputs.versions) }}
+        python-version: ${{ fromJSON(needs.supported-pythons.outputs.all) }}
         include:
           - name: run tests (oldest Python)
             python-version: ${{ steps.supported-pythons.outputs.oldest }}

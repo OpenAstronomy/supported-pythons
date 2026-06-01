@@ -29,6 +29,6 @@ jobs:
         uses: ./
         with:
           package: ${{ matrix.repository }}
-      - run: echo versions=${{ steps.supported-pythons.outputs.versions }}
+      - run: echo all=${{ steps.supported-pythons.outputs.all }}
       - run: echo oldest=${{ steps.supported-pythons.outputs.oldest }}
       - run: echo latest=${{ steps.supported-pythons.outputs.latest }}

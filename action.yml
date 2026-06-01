@@ -26,20 +26,20 @@ runs:
         python-version: 3
     - run: git clone https://github.com/${{ inputs.package || github.workflow_repository }} ${{ (inputs.package-ref != '' || inputs.package == '') && format('--revision={0}', inputs.package != '' && inputs.package-ref || github.workflow_sha) || '' }} ../package/
       shell: bash
-    - id: versions
-      run: echo versions=$(pipx run ${{ github.action_path }}/supported_pythons.py --package-source=../package/ ${{ inputs.no-eoas == 'true' && '--no-eoas' || '' }}) >> $GITHUB_OUTPUT
+    - id: all
+      run: echo all=$(pipx run ${{ github.action_path }}/supported_pythons.py --package-source=../package/ ${{ inputs.no-eoas == 'true' && '--no-eoas' || '' }}) >> $GITHUB_OUTPUT
       shell: bash
     - id: oldest
-      run: echo oldest=$(python -c "print(${{ steps.versions.outputs.versions }}[0])") >> $GITHUB_OUTPUT
+      run: echo oldest=$(python -c "print(${{ steps.all.outputs.all }}[0])") >> $GITHUB_OUTPUT
       shell: bash
     - id: latest
-      run: echo latest=$(python -c "print(${{ steps.versions.outputs.versions }}[-1])") >> $GITHUB_OUTPUT
+      run: echo latest=$(python -c "print(${{ steps.all.outputs.all }}[-1])") >> $GITHUB_OUTPUT
       shell: bash
 
 outputs:
-  versions:
+  all:
     description: "Python minor versions as a JSON list"
-    value: ${{ steps.versions.outputs.versions }}
+    value: ${{ steps.all.outputs.all }}
   oldest:
     description: "oldest supported Python minor version"
     value: ${{ steps.oldest.outputs.oldest }}
