@@ -27,49 +27,25 @@ jobs:
           package: spacetelescope/romancal
     outputs:
       versions: ${{ steps.supported-pythons.outputs.versions }}
-  test_all_versions:
+      oldest: ${{ steps.supported-pythons.outputs.oldest }}
+      latest: ${{ steps.supported-pythons.outputs.latest }}
+  test:
     needs: supported-pythons
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: ${{ fromJSON(needs.supported-pythons.outputs.versions) }}
+        include:
+          - name: run tests (oldest Python)
+            python-version: ${{ steps.supported-pythons.outputs.oldest }}
+          - name: run tests (latest Python)
+            python-version: ${{ steps.supported-pythons.outputs.latest }}
+      fail-fast: false
+    name: ${{ matrix.name || format('run tests (Python {0})', matrix.python-version) }}
     steps:
       - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
-      - uses: actions/checkout@v6
-      - run: pip install . pytest
-      - run: pytest
-```
-
-```yaml
-jobs:
-  test_only_oldest:
-    runs-on: ubuntu-latest
-    steps:
-      - id: supported-pythons
-        uses: zacharyburnett/supported-pythons@2.0.3
-        with:
-          package: spacetelescope/romancal
-      - uses: actions/setup-python@v6
-        with:
-          python-version: ${{ steps.supported-pythons.outputs.oldest }}
-      - uses: actions/checkout@v6
-      - run: pip install . pytest
-      - run: pytest
-```
-```yaml
-jobs:
-  test_only_latest:
-    runs-on: ubuntu-latest
-    steps:
-      - id: supported-pythons
-        uses: zacharyburnett/supported-pythons@2.0.3
-        with:
-          package: spacetelescope/romancal
-      - uses: actions/setup-python@v6
-        with:
-          python-version: ${{ steps.supported-pythons.outputs.latest }}
       - uses: actions/checkout@v6
       - run: pip install . pytest
       - run: pytest
