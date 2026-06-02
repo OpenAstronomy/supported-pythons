@@ -30,10 +30,10 @@ runs:
       run: echo versions=$(pipx run ${{ github.action_path }}/supported_pythons.py --package-source=../package/ ${{ inputs.no-eoas == 'true' && '--no-eoas' || '' }}) >> $GITHUB_OUTPUT
       shell: bash
     - id: oldest
-      run: echo oldest=$(python -c "print(${{ steps.versions.outputs.versions }}[0])") >> $GITHUB_OUTPUT
+      run: echo oldest=$(python -c 'print(${{ steps.versions.outputs.versions }}[0])') >> $GITHUB_OUTPUT
       shell: bash
     - id: latest
-      run: echo latest=$(python -c "print(${{ steps.versions.outputs.versions }}[-1])") >> $GITHUB_OUTPUT
+      run: echo latest=$(python -c 'print(${{ steps.versions.outputs.versions }}[-1])') >> $GITHUB_OUTPUT
       shell: bash
 
 outputs:
