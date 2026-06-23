@@ -17,9 +17,16 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        repository:
+        package:
+          - romancal
           - spacetelescope/romancal
-          - psf/requests
+          - https://github.com/spacetelescope/romancal
+        package-ref: ['']
+        include:
+          - package: romancal
+            package-ref: 0.22.0
+          - package: spacetelescope/romancal
+            package-ref: 0.22.0
       fail-fast: false
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -28,7 +35,8 @@ jobs:
       - id: supported-pythons
         uses: ./
         with:
-          package: ${{ matrix.repository }}
+          package: ${{ matrix.package }}
+          package-ref: ${{ matrix.package-ref }}
       - run: echo versions=${{ steps.supported-pythons.outputs.versions }}
       - run: echo oldest=${{ steps.supported-pythons.outputs.oldest }}
       - run: echo latest=${{ steps.supported-pythons.outputs.latest }}
