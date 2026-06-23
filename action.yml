@@ -6,11 +6,11 @@ branding:
 
 inputs:
   package:
-    description: package source repository containing `pyproject.toml`
+    description: package name on PyPI, or URL to source repository containing `pyproject.toml`
     required: false
     default: ""
   package-ref:
-    description: branch or tag of package source
+    description: release version on PyPI, or tag / branch / commit of package source
     required: false
     default: ""
   no-eoas:
@@ -24,7 +24,11 @@ runs:
     - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
       with:
         python-version: 3
-    - run: git clone https://github.com/${{ inputs.package || github.workflow_repository }} ${{ (inputs.package-ref != '' || inputs.package == '') && format('--revision={0}', inputs.package != '' && inputs.package-ref || github.workflow_sha) || '' }} ../package/
+    - if: inputs.package == '' || contains(inputs.package, '/')
+      run: git clone ${{ inputs.package != '' && contains(inputs.package, 'http') && inputs.package || format('https://github.com/{0}', inputs.package) || github.repository }} ${{ (inputs.package-ref != '' || inputs.package == '') && format('--revision={0}', inputs.package != '' && inputs.package-ref || github.sha) || '' }} ../package/
+      shell: bash
+    - if: inputs.package != '' && !contains(inputs.package, '/')
+      run: mkdir ../package && cd ../package && curl https://pypi.org/pypi/${{ inputs.package }}/json | python -c "import json, sys; releases = json.loads(sys.stdin.read())[\"releases\"]; release = ${{ inputs.package-ref != '' && format('releases[\"{0}\"]', inputs.package-ref) || 'list(releases.values())[-1]' }}; print([dist for dist in release if dist[\"packagetype\"] == \"sdist\"][-1][\"url\"]);" | xargs -n 1 curl -L | tar xz --strip-components=1
       shell: bash
     - id: versions
       run: echo versions=$(pipx run ${{ github.action_path }}/supported_pythons.py --package-source=../package/ ${{ inputs.no-eoas == 'true' && '--no-eoas' || '' }}) >> $GITHUB_OUTPUT
