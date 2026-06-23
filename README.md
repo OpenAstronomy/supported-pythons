@@ -4,11 +4,11 @@
 
 retrieve active (not end-of-life) minor versions of Python supported by a Python package
 
-| input         | description                                           |
-| ------------- | ----------------------------------------------------- |
-| `package`     | package source repository containing `pyproject.toml` |
-| `package-ref` | branch or tag of package source                       |
-| `no-eoas`     | also omit end-of-active-support versions of Python    |
+| input         | description                                                                   |
+| ------------- | ----------------------------------------------------------------------------- |
+| `package`     | package name on PyPI, or URL to source repository containing `pyproject.toml` |
+| `package-ref` | release version on PyPI, or tag / branch / commit of package source           |
+| `no-eoas`     | also omit end-of-active-support versions of Python                            |
 
 | output     | description                           |
 | ---------- | ------------------------------------- |
@@ -22,9 +22,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - id: supported-pythons
-        uses: OpenAstronomy/supported-pythons@2.0.4
+        uses: OpenAstronomy/supported-pythons@2.1.0
         with:
-          package: spacetelescope/romancal
+          package: romancal
+          package-ref: 1.0.1
     outputs:
       versions: ${{ steps.supported-pythons.outputs.versions }}
       oldest: ${{ steps.supported-pythons.outputs.oldest }}
@@ -47,6 +48,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - uses: actions/checkout@v6
-      - run: pip install . pytest
+      - run: pip install .[test]
       - run: pytest
 ```
